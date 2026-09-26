@@ -20,9 +20,10 @@ storage.
   [The pairing chart](#the-pairing-chart-the-science) below.
 - **Build a set** of up to 24 kinds, with quantities up to 6 per kind, reorder
   pieces, merge duplicates, edit, and remove.
-- **Share a link.** The entire set is compacted into an lz-string payload in the
-  URL hash (`#/s/v2...`). Whoever opens it gets a read-only recipe page with an
-  option to edit a copy.
+- **Share a link.** The set is packed with a compact schema (catalog ids,
+  bitmasks, omitted defaults) and compressed with the smaller of gzip and
+  lz-string, then carried in the URL hash (`#/s/v3g...`). Whoever opens it gets
+  a read-only recipe page with an option to edit a copy.
 - **Carry hand-written recipes.** Any piece (and the set as a whole, as a "base
   preparation") can hold freeform notes: dish name, type of fish, cut, rice per
   piece, how to make the sauce, an explicit ingredient list, before/after steps,
@@ -71,13 +72,21 @@ of seeded rolls.
 
 ## How sharing works
 
-A set is JSON — name, an optional base preparation, and pieces with their
-optional recipe notes — compressed with
-[lz-string](https://github.com/pieroxy/lz-string) and put in the URL fragment as
-`#/s/v2.<payload>`. Nothing is uploaded anywhere, and the app is a static site,
-so links keep working as long as the page is hosted. Very large sets make long
-URLs — that is the price of having no database. Older compact `#/s/<code>` links
-(v1) still decode.
+A set is packed with a schema tuned to this app — catalog ids, bitmasks for
+rice extras and toppings, omitted defaults, one-letter keys for recipe notes —
+and then compressed with whichever is smaller, gzip (`v3g.`) or lz-string
+(`v3l.`), and put in the URL fragment. Each flavor tries the codec's own
+`encodeSet` on the way out; `decodeSet` handles all of them:
+
+- `#/s/v3g.<base64url>`: gzip of the compact schema (usual winner),
+- `#/s/v3l.<lz>`: lz-string of the compact schema (wins on tiny sets),
+- `#/s/v2.<lz>`: legacy full-JSON shape,
+- `#/s/<code>`: the original packed v1 format.
+
+Nothing is uploaded anywhere, and the app is a static site, so links keep
+working as long as the page is hosted. Very large sets still make long URLs, but
+a nine-recipe course with a base preparation lands around 3.5 KB, roughly half
+of what generic JSON + lz-string produced.
 
 On load, the app also writes your working draft to
 `localStorage["nigiri-studio.draft.v1"]` and saved sets to

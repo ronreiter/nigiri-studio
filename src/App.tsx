@@ -26,7 +26,7 @@ import { copyText } from './lib/clipboard'
 import { surprisePiece } from './lib/surprise'
 import { loadDraft, loadSets, removeSet, saveDraft, upsertSet, type SavedSet } from './lib/storage'
 
-type Route = { kind: 'builder' } | { kind: 'viewer'; set: SetData; preview: boolean }
+type Route = { kind: 'builder' } | { kind: 'loading' } | { kind: 'viewer'; set: SetData; preview: boolean }
 
 const SAMPLE_SET: SetData = {
   name: 'Omakase for one',
@@ -37,17 +37,15 @@ const SAMPLE_SET: SetData = {
   ],
 }
 
-function parseHash(): Route {
-  const match = window.location.hash.match(/^#\/s\/(.+)$/)
-  if (match) {
-    const set = decodeSet(match[1])
-    if (set) return { kind: 'viewer', set, preview: false }
-  }
-  return { kind: 'builder' }
+function hashHasSet(): boolean {
+  return window.location.hash.startsWith('#/s/')
 }
 
-function shareUrl(set: SetData): string {
-  return `${window.location.origin}${window.location.pathname}#/s/${encodeSet(set)}`
+async function resolveHash(): Promise<Route> {
+  const match = window.location.hash.match(/^#\/s\/(.+)$/)
+  if (!match) return { kind: 'builder' }
+  const set = await decodeSet(match[1])
+  return set ? { kind: 'viewer', set, preview: false } : { kind: 'builder' }
 }
 
 function Seal() {
@@ -63,7 +61,7 @@ function Seal() {
 }
 
 export default function App() {
-  const [route, setRoute] = useState<Route>(() => parseHash())
+  const [route, setRoute] = useState<Route>(() => (hashHasSet() ? { kind: 'loading' } : { kind: 'builder' }))
   const [name, setName] = useState(() => (loadDraft() ?? SAMPLE_SET).name)
   const [pieces, setPieces] = useState<Piece[]>(() => (loadDraft() ?? SAMPLE_SET).pieces)
   const [baseRecipe, setBaseRecipe] = useState<PieceRecipe | undefined>(() => (loadDraft() ?? SAMPLE_SET).base)
@@ -85,9 +83,19 @@ export default function App() {
   }, [name, pieces, baseRecipe])
 
   useEffect(() => {
-    const onHash = () => setRoute(parseHash())
+    let cancelled = false
+    const sync = async () => {
+      const next = await resolveHash()
+      if (!cancelled) setRoute(next)
+    }
+    void sync()
+    const onHash = () => {
+      setRoute(hashHasSet() ? { kind: 'loading' } : { kind: 'builder' })
+      void sync()
+    }
     window.addEventListener('hashchange', onHash)
     return () => {
+      cancelled = true
       window.removeEventListener('hashchange', onHash)
       if (toastTimer.current) window.clearTimeout(toastTimer.current)
     }
@@ -205,12 +213,14 @@ export default function App() {
   }
 
   const copyLinkFor = async (set: SetData) => {
-    const copied = await copyText(shareUrl(set))
+    const code = await encodeSet(set)
+    const url = `${window.location.origin}${window.location.pathname}#/s/${code}`
+    const copied = await copyText(url)
     if (copied) {
       showToast('Share link copied')
       return
     }
-    window.location.hash = `#/s/${encodeSet(set)}`
+    window.location.hash = `#/s/${code}`
     showToast('Link is in the address bar')
   }
 
@@ -271,6 +281,10 @@ export default function App() {
             window.scrollTo({ top: 0 })
           }}
         />
+      ) : route.kind === 'loading' ? (
+        <main className="loading" aria-live="polite">
+          <p>Opening the set…</p>
+        </main>
       ) : (
         <main className="builder">
           <BuilderPanel
