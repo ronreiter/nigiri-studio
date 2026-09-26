@@ -981,6 +981,24 @@ button {
   position: sticky;
   top: 86px;
   padding: 20px;
+  max-height: calc(100vh - 106px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.shopping::-webkit-scrollbar {
+  width: 10px;
+}
+
+.shopping::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.shopping::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 2px solid var(--paper-2);
+  border-radius: 999px;
 }
 
 .shopping h2 {
@@ -1303,6 +1321,8 @@ button {
 
   .shopping {
     position: static;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .piece-card {
