@@ -93,7 +93,7 @@ describe('SetViewer', () => {
     expect(screen.queryByText(/Wet your hands with tezu/)).toBeNull()
   })
 
-  it('shows the base preparation full width at the top and keeps a print copy in the sidebar', () => {
+  it('shows the base preparation at the top of the main column and keeps a print copy in the sidebar', () => {
     renderViewer()
     const top = document.querySelector('.rice-guide--top') as HTMLElement
     const aside = document.querySelector('.rice-guide--aside') as HTMLElement

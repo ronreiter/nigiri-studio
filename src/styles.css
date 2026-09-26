@@ -983,9 +983,8 @@ button {
 }
 
 .rice-guide--top {
-  grid-column: 1 / -1;
-  padding: 24px;
-  margin-bottom: 20px;
+  padding: 20px;
+  margin-bottom: 18px;
   background: var(--paper-2);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1415,11 +1414,6 @@ button {
 
   .rice-guide h2 {
     font-size: 20px;
-  }
-
-  .rice-columns {
-    columns: 2;
-    column-gap: 10mm;
   }
 
   .rice-columns h3 {

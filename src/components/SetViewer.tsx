@@ -252,9 +252,9 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
         </div>
       </header>
 
-      {set.base && <BaseCard recipe={set.base} variant="top" />}
-
       <div className="viewer-main">
+        {set.base && <BaseCard recipe={set.base} variant="top" />}
+
         {set.pieces.length === 0 ? (
           <p className="empty">This set is empty.</p>
         ) : (
