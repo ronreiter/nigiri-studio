@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import { SetViewer } from './SetViewer'
 import type { SetData } from '../data/options'
 
@@ -59,18 +59,20 @@ describe('SetViewer', () => {
     expect(screen.getByRole('heading', { name: 'Tuna Zuke Nigiri' })).toBeTruthy()
   })
 
-  it('renders the base preparation, its sauce recipe and its comments', () => {
+  it('renders the base preparation at the top with its sauce recipe and comments', () => {
     renderViewer()
-    expect(screen.getByRole('heading', { name: 'Sushi Rice & Basic Sauces' })).toBeTruthy()
-    expect(screen.getByText('3 tbsp rice vinegar')).toBeTruthy()
+    const top = document.querySelector('.rice-guide--top') as HTMLElement
+    expect(within(top).getByRole('heading', { name: 'Sushi Rice & Basic Sauces' })).toBeTruthy()
+    expect(within(top).getByText('3 tbsp rice vinegar')).toBeTruthy()
     expect(
-      screen.getByText('Use fish that has been handled and sold as suitable for raw consumption.'),
+      within(top).getByText('Use fish that has been handled and sold as suitable for raw consumption.'),
     ).toBeTruthy()
   })
 
   it('renders bold text inside numbered steps', () => {
     renderViewer()
-    expect(screen.getByText('mostly clear').tagName).toBe('STRONG')
+    const top = document.querySelector('.rice-guide--top') as HTMLElement
+    expect(within(top).getByText('mostly clear').tagName).toBe('STRONG')
   })
 
   it('renders a recipe exactly: meta, optionals, steps and bold text', () => {
@@ -91,11 +93,12 @@ describe('SetViewer', () => {
     expect(screen.queryByText(/Wet your hands with tezu/)).toBeNull()
   })
 
-  it('puts the base preparation under the shopping list', () => {
+  it('shows the base preparation full width at the top and keeps a print copy in the sidebar', () => {
     renderViewer()
-    const aside = screen.getByRole('complementary', { name: 'Shopping list and base preparation' })
-    expect(aside.textContent).toContain('Shopping list')
-    expect(aside.textContent).toContain('Sushi Rice & Basic Sauces')
+    const top = document.querySelector('.rice-guide--top') as HTMLElement
+    const aside = document.querySelector('.rice-guide--aside') as HTMLElement
+    expect(within(top).getByRole('heading', { name: 'Sushi Rice & Basic Sauces' })).toBeTruthy()
+    expect(within(aside).getByText('3 tbsp rice vinegar')).toBeTruthy()
   })
 
   it('falls back to “How to make the rice” when the base has no title', () => {
@@ -109,6 +112,7 @@ describe('SetViewer', () => {
         onBackToBuilder={vi.fn()}
       />,
     )
-    expect(screen.getByRole('heading', { name: 'How to make the rice' })).toBeTruthy()
+    const top = document.querySelector('.rice-guide--top') as HTMLElement
+    expect(within(top).getByRole('heading', { name: 'How to make the rice' })).toBeTruthy()
   })
 })

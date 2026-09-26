@@ -35,9 +35,9 @@ storage.
 - **Cook from it.** Every piece gets an ingredient list, step-by-step assembly
   instructions that follow your exact choices, and the set gets an aggregated
   shopping list. A set-level base preparation (how to make the rice and basic
-  sauces) sits at the bottom of the shopping list. The recipe view is
-  print-friendly: every fish starts on its own page, and the shopping list plus
-  the rice guide close the document in two columns.
+  sauces) spans the top of the recipe view. It is print-friendly: every fish
+  starts on its own page, and the base preparation closes the printable
+  document in two columns, after the shopping list.
 
 ## Run it
 

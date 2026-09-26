@@ -185,11 +185,15 @@ function PieceCard({ piece }: { piece: Piece }) {
   )
 }
 
-function BaseCard({ recipe }: { recipe: PieceRecipe }) {
+function BaseCard({ recipe, variant }: { recipe: PieceRecipe; variant: 'top' | 'aside' }) {
   return (
-    <section className="rice-guide" aria-labelledby="rice-guide-heading">
+    <section
+      className={`rice-guide rice-guide--${variant}`}
+      aria-labelledby={`rice-guide-heading-${variant}`}
+      aria-hidden={variant === 'aside' ? true : undefined}
+    >
       <p className="eyebrow">Base preparation</p>
-      <h2 id="rice-guide-heading">{recipe.title ?? 'How to make the rice'}</h2>
+      <h2 id={`rice-guide-heading-${variant}`}>{recipe.title ?? 'How to make the rice'}</h2>
       {recipe.fish && <p className="piece-sub">{recipe.fish}</p>}
       {(recipe.cut || recipe.rice) && (
         <ul className="recipe-meta">
@@ -249,6 +253,8 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
           </div>
         </header>
 
+        {set.base && <BaseCard recipe={set.base} variant="top" />}
+
         {set.pieces.length === 0 ? (
           <p className="empty">This set is empty.</p>
         ) : (
@@ -274,14 +280,7 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
           Quantities assume 18 g of seasoned shari per piece.
           {hasCustomRecipes ? ' Custom recipes carry their own amounts — check each card.' : ''}
         </p>
-        {set.base && (
-          <>
-            <a className="rice-jump" href="#rice-guide-heading">
-              How to make the rice ↓
-            </a>
-            <BaseCard recipe={set.base} />
-          </>
-        )}
+        {set.base && <BaseCard recipe={set.base} variant="aside" />}
       </aside>
     </main>
   )
