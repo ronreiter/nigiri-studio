@@ -16,6 +16,7 @@ import {
   pieceTitleJp,
   sanitizeName,
   type Piece,
+  type PieceRecipe,
   type SetData,
 } from './data/options'
 import { PAIRINGS } from './data/pairings'
@@ -65,6 +66,7 @@ export default function App() {
   const [route, setRoute] = useState<Route>(() => parseHash())
   const [name, setName] = useState(() => (loadDraft() ?? SAMPLE_SET).name)
   const [pieces, setPieces] = useState<Piece[]>(() => (loadDraft() ?? SAMPLE_SET).pieces)
+  const [baseRecipe, setBaseRecipe] = useState<PieceRecipe | undefined>(() => (loadDraft() ?? SAMPLE_SET).base)
   const [draftPiece, setDraftPiece] = useState<Piece>(DEFAULT_PIECE)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [savedSets, setSavedSets] = useState<SavedSet[]>(() => loadSets())
@@ -79,8 +81,8 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    saveDraft({ name: sanitizeName(name), pieces })
-  }, [name, pieces])
+    saveDraft({ name: sanitizeName(name), pieces, base: baseRecipe })
+  }, [name, pieces, baseRecipe])
 
   useEffect(() => {
     const onHash = () => setRoute(parseHash())
@@ -94,6 +96,7 @@ export default function App() {
   const loadSetIntoBuilder = (set: SetData, message: string) => {
     setName(set.name)
     setPieces(set.pieces)
+    setBaseRecipe(set.base)
     setEditingIndex(null)
     setRoute({ kind: 'builder' })
     if (window.location.hash) window.location.hash = ''
@@ -104,6 +107,7 @@ export default function App() {
   const newSet = () => {
     setName('')
     setPieces([])
+    setBaseRecipe(undefined)
     setDraftPiece(DEFAULT_PIECE)
     setEditingIndex(null)
     setRoute({ kind: 'builder' })
@@ -189,7 +193,7 @@ export default function App() {
     showToast(PAIRINGS[next.fish].note)
   }
 
-  const currentSet = (): SetData => ({ name: sanitizeName(name), pieces })
+  const currentSet = (): SetData => ({ name: sanitizeName(name), pieces, base: baseRecipe })
 
   const saveCurrent = () => {
     if (pieces.length === 0) {
@@ -314,8 +318,10 @@ export default function App() {
           <SetTray
             name={name}
             pieces={pieces}
+            base={baseRecipe}
             editingIndex={editingIndex}
             onNameChange={setName}
+            onBaseChange={setBaseRecipe}
             onEdit={editPiece}
             onDuplicate={duplicatePiece}
             onRemove={removePiece}

@@ -59,6 +59,7 @@ export function loadSets(): SavedSet[] {
       id: typeof record.id === 'string' ? record.id : newId(),
       name: set.name,
       pieces: set.pieces.slice(0, MAX_PIECES),
+      base: set.base,
       createdAt: typeof record.createdAt === 'number' ? record.createdAt : Date.now(),
       updatedAt: typeof record.updatedAt === 'number' ? record.updatedAt : Date.now(),
     })
@@ -77,12 +78,14 @@ export function upsertSet(input: SetData & { id?: string }): SavedSet[] {
   if (existing) {
     existing.name = input.name
     existing.pieces = input.pieces
+    existing.base = input.base
     existing.updatedAt = now
   } else {
     sets.push({
       id: newId(),
       name: input.name,
       pieces: input.pieces,
+      base: input.base,
       createdAt: now,
       updatedAt: now,
     })

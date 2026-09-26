@@ -60,6 +60,18 @@ export const FISH = [
     note: 'Loves a dab of yuzukosho.',
   },
   {
+    id: 'intias',
+    code: 'in',
+    en: 'Intias',
+    jp: 'カンパチ',
+    romaji: 'kanpachi',
+    swatch: ['#fdece4', '#f3c4b2', '#d99a88'],
+    grams: 12,
+    blurb: 'Amberjack: lean, clean, and quietly sweet.',
+    prep: 'Slice 5–6 mm thick, across the grain, for a clean bite.',
+    note: 'Finish light: yuzu and sea salt are enough.',
+  },
+  {
     id: 'shrimp',
     code: 'eb',
     en: 'Shrimp',
@@ -221,6 +233,18 @@ export const SAUCES = [
     ingredient: 'Unagi tare — a light brush',
     step: 'Brush the shari with unagi tare; it is sweet, glossy, and made for eel.',
   },
+  {
+    id: 'zuke',
+    code: 'k',
+    en: 'Zuke marinade',
+    jp: '漬け',
+    romaji: 'zuke',
+    blurb: 'Soy, mirin, and sake: the marinade for tuna.',
+    color: '#7a3a1c',
+    ingredients: ['soy sauce', 'mirin', 'sake'],
+    ingredient: 'Zuke marinade — marinate the fish 5–8 minutes',
+    step: 'Marinate the sliced tuna in zuke for 5–8 minutes, blot it gently, then lay it on the shari.',
+  },
 ] as const
 
 export type SauceId = (typeof SAUCES)[number]['id']
@@ -303,10 +327,56 @@ export const TOPPINGS = [
     ingredient: 'Shichimi togarashi — a dusting',
     step: 'Dust with shichimi togarashi just before serving.',
   },
+  {
+    id: 'yuzu',
+    code: 'z',
+    en: 'Yuzu juice',
+    jp: '柚子果汁',
+    romaji: 'yuzu',
+    color: '#d8c94a',
+    ingredient: 'Yuzu juice — 1–2 drops',
+    step: 'Add 1–2 drops of yuzu juice.',
+  },
+  {
+    id: 'seaSalt',
+    code: 's',
+    en: 'Sea salt',
+    jp: '海塩',
+    romaji: 'shio',
+    color: '#e8eef2',
+    ingredient: 'Flaky sea salt — a few flakes',
+    step: 'Finish with a few flakes of sea salt.',
+  },
 ] as const
 
 export type ToppingId = (typeof TOPPINGS)[number]['id']
 export type ToppingOption = (typeof TOPPINGS)[number]
+
+/**
+ * Freeform recipe notes. Everything here is optional; when a field is present
+ * it is shown exactly as written, on top of the structured piece. This is what
+ * lets a shared link carry a hand-written recipe without losing detail.
+ */
+export type PieceRecipe = {
+  /** Custom dish name, used instead of the generated one. */
+  title?: string
+  /** The "type of fish" line, e.g. "Intias / amberjack." */
+  fish?: string
+  /** How to cut it, e.g. "5–6 mm thick, across the grain". */
+  cut?: string
+  /** Rice amount, e.g. "13–15 g per piece". */
+  rice?: string
+  /** The "how to make the sauce" section, markdown-ish and multi-line. */
+  sauce?: string
+  /** Explicit ingredient lines, shown instead of the derived list. */
+  ingredients?: string[]
+  /** Steps to take before the fish goes on the rice. */
+  before?: string[]
+  /** Steps to take after the fish goes on the rice. */
+  after?: string[]
+  /** Notes, serving order, warnings. */
+  comments?: string[]
+}
 
 export type Piece = {
   fish: FishId
@@ -315,11 +385,14 @@ export type Piece = {
   torched: boolean
   toppings: ToppingId[]
   qty: number
+  recipe?: PieceRecipe
 }
 
 export type SetData = {
   name: string
   pieces: Piece[]
+  /** A base preparation that applies to the whole set, e.g. rice and sauces. */
+  base?: PieceRecipe
 }
 
 export const MAX_QTY = 6
@@ -376,10 +449,39 @@ export function normalizePiece(piece: Piece): Piece {
     torched: piece.torched,
     toppings: sortByOrder([...new Set(piece.toppings)], OPTION_ORDER.toppings),
     qty: Math.min(MAX_QTY, Math.max(1, Math.round(piece.qty) || 1)),
+    recipe: cleanRecipe(piece.recipe),
   }
 }
 
+function cleanText(value: string | undefined): string | undefined {
+  const trimmed = value?.trim()
+  return trimmed ? trimmed : undefined
+}
+
+function cleanList(values: string[] | undefined): string[] | undefined {
+  if (!values) return undefined
+  const cleaned = values.map((value) => value.trim()).filter(Boolean)
+  return cleaned.length > 0 ? cleaned : undefined
+}
+
+export function cleanRecipe(recipe: PieceRecipe | undefined): PieceRecipe | undefined {
+  if (!recipe) return undefined
+  const cleaned: PieceRecipe = {
+    title: cleanText(recipe.title),
+    fish: cleanText(recipe.fish),
+    cut: cleanText(recipe.cut),
+    rice: cleanText(recipe.rice),
+    sauce: cleanText(recipe.sauce),
+    ingredients: cleanList(recipe.ingredients),
+    before: cleanList(recipe.before),
+    after: cleanList(recipe.after),
+    comments: cleanList(recipe.comments),
+  }
+  return Object.values(cleaned).some((value) => value !== undefined) ? cleaned : undefined
+}
+
 export function pieceTitle(piece: Piece): string {
+  if (piece.recipe?.title) return piece.recipe.title
   const fish = fishOf(piece.fish)
   const base = piece.torched ? `Aburi ${fish.en}` : fish.en
   const highlights = nameHighlights(piece).map((item) => item.en)
@@ -427,12 +529,14 @@ export function pieceSubtitle(piece: Piece): string {
 }
 
 export function pieceKey(piece: Piece): string {
+  const recipe = cleanRecipe(piece.recipe)
   return [
     piece.fish,
     piece.sauce,
     piece.riceExtras.join(''),
     piece.torched ? '1' : '0',
     piece.toppings.join(''),
+    recipe ? JSON.stringify(recipe) : '',
   ].join('-')
 }
 

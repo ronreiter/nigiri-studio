@@ -683,6 +683,69 @@ button {
   box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
 }
 
+.field textarea {
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  padding: 10px 12px;
+  border-radius: 11px;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  color: var(--ink);
+  resize: vertical;
+}
+
+.field textarea:focus {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+}
+
+.recipe-notes {
+  border-top: 1px dashed var(--line);
+  padding: 14px 0 2px;
+}
+
+.recipe-notes summary {
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  list-style: none;
+}
+
+.recipe-notes summary::-webkit-details-marker {
+  display: none;
+}
+
+.recipe-notes summary::before {
+  content: '+ ';
+  color: var(--red);
+}
+
+.recipe-notes[open] summary::before {
+  content: '− ';
+}
+
+.recipe-fields {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.recipe-fields .field {
+  margin: 0;
+}
+
+.recipe-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
 .tray-list {
   list-style: none;
   margin: 0;
@@ -957,6 +1020,90 @@ button {
   font-size: 13px;
   color: var(--ink-soft);
   line-height: 1.5;
+}
+
+.recipe-meta {
+  list-style: none;
+  margin: 14px 0 4px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.recipe-meta li {
+  display: flex;
+  gap: 10px;
+  font-size: 13.5px;
+}
+
+.recipe-meta span {
+  min-width: 108px;
+  padding-top: 2px;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.recipe-meta em {
+  font-style: normal;
+}
+
+.recipe-heading {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 20px 0 10px;
+}
+
+.recipe-text {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.recipe-text p {
+  margin: 0;
+}
+
+.recipe-text-heading {
+  font-family: var(--font-display);
+  font-size: 15px;
+  margin: 6px 0 2px;
+}
+
+.recipe-text-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.recipe-comments {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.base-card {
+  padding: 22px 24px;
+  margin-bottom: 18px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.base-card h2 {
+  font-size: 26px;
+  margin-bottom: 4px;
 }
 
 /* ---------- drawer ---------- */

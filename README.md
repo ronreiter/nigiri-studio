@@ -20,9 +20,15 @@ storage.
   [The pairing chart](#the-pairing-chart-the-science) below.
 - **Build a set** of up to 24 kinds, with quantities up to 6 per kind, reorder
   pieces, merge duplicates, edit, and remove.
-- **Share a link.** The entire set is compacted into a base64url payload in the
-  URL hash (`#/s/...`). Whoever opens it gets a read-only recipe page with an
+- **Share a link.** The entire set is compacted into an lz-string payload in the
+  URL hash (`#/s/v2...`). Whoever opens it gets a read-only recipe page with an
   option to edit a copy.
+- **Carry hand-written recipes.** Any piece (and the set as a whole, as a "base
+  preparation") can hold freeform notes: dish name, type of fish, cut, rice per
+  piece, how to make the sauce, an explicit ingredient list, before/after steps,
+  and comments. When present they are shown verbatim, markdown-ish formatting
+  included, instead of the generated text — so a link can reproduce a written
+  recipe without losing detail.
 - **Save sets** in `localStorage` and reopen them later (`My sets`).
 - **Cook from it.** Every piece gets an ingredient list, step-by-step assembly
   instructions that follow your exact choices, and the set gets an aggregated
@@ -33,11 +39,15 @@ storage.
 ```bash
 npm install
 npm run dev      # dev server
-npm test         # codec + instruction tests
+npm test         # unit + component tests
+npm run check    # typecheck, lint, tests (what CI runs)
 npm run lint     # oxlint
 npm run build    # tsc + vite build to dist/
 npm run preview  # serve the build
 ```
+
+There is also a [Taskfile](Taskfile.yml) (`task --list`): `task setup`, `task
+dev`, `task check`, `task build`, `task preview`, `task deploy`, `task clean`.
 
 ## The pairing chart (the science)
 
@@ -61,11 +71,13 @@ of seeded rolls.
 
 ## How sharing works
 
-A set is serialized as `1|<name>|<piece>;<piece>;...`, base64url-encoded, and put
-in the URL fragment. Piece codes are compact (`fish.sauce.extras.torch.toppings.qty`,
-e.g. `sa.n.wh.1.cy.2`). Nothing is uploaded anywhere, and the app is a static
-site, so links keep working as long as the page is hosted. Very large sets make
-long URLs — that is the price of having no database.
+A set is JSON — name, an optional base preparation, and pieces with their
+optional recipe notes — compressed with
+[lz-string](https://github.com/pieroxy/lz-string) and put in the URL fragment as
+`#/s/v2.<payload>`. Nothing is uploaded anywhere, and the app is a static site,
+so links keep working as long as the page is hosted. Very large sets make long
+URLs — that is the price of having no database. Older compact `#/s/<code>` links
+(v1) still decode.
 
 On load, the app also writes your working draft to
 `localStorage["nigiri-studio.draft.v1"]` and saved sets to
@@ -75,13 +87,16 @@ On load, the app also writes your working draft to
 
 ```
 src/data/options.ts        catalog: fish, sauces, rice extras, toppings, types
+src/data/pairings.ts       the pairing chart behind Surprise me (pure data)
 src/data/instructions.ts   ingredients, steps, shopping list generation
 src/components/NigiriSvg.tsx  the layered SVG illustration
 src/components/BuilderPanel.tsx  option pickers for one piece
+src/components/RecipeFields.tsx  freeform recipe-note editor
 src/components/SetTray.tsx       the set being built
 src/components/SetViewer.tsx     shared/preview recipe page
 src/components/SavedSets.tsx     localStorage drawer
 src/lib/codec.ts           share-link encoding, decoding, validation
+src/lib/surprise.ts        weighted sampler for Surprise me
 src/lib/storage.ts         localStorage read/write
 ```
 

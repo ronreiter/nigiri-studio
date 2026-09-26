@@ -67,3 +67,25 @@ describe('shoppingList', () => {
     expect(shoppingList([])).toEqual([])
   })
 })
+
+describe('newer components', () => {
+  it('walks through marinating when zuke is chosen', () => {
+    expect(pieceSteps({ ...tuna, sauce: 'zuke' }).join(' ')).toMatch(/marinate/i)
+    expect(pieceIngredients({ ...tuna, sauce: 'zuke' })).toContainEqual({
+      label: 'Zuke marinade',
+      detail: 'to taste',
+    })
+  })
+
+  it('lists yuzu juice and sea salt when they are chosen', () => {
+    const labels = pieceIngredients({ ...tuna, toppings: ['yuzu', 'seaSalt'] }).map((item) => item.label)
+    expect(labels).toContain('Yuzu juice')
+    expect(labels).toContain('Sea salt')
+  })
+
+  it('aggregates yuzu and sea salt into the shopping list', () => {
+    const list = shoppingList([{ ...tuna, toppings: ['yuzu', 'seaSalt'] }])
+    expect(list.find((item) => item.key === 'topping:yuzu')?.detail).toContain('on top')
+    expect(list.find((item) => item.key === 'topping:seaSalt')?.detail).toContain('on top')
+  })
+})

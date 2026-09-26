@@ -11,12 +11,55 @@ const sample: SetData = {
   ],
 }
 
+const written: SetData = {
+  name: 'Course notes',
+  base: {
+    title: 'Sushi Rice & Basic Sauces',
+    fish: 'Base preparation — works for all fish.',
+    sauce: '### Rice seasoning\nFor about 48 nigiri:\n\n- 3 tbsp rice vinegar\n- 1 tsp fine salt',
+    ingredients: ['1½ cups sushi rice', 'Flaky sea salt'],
+    before: ['Wash the rice 4–5 times', 'Shape about 13–15 g rice per nigiri'],
+    after: ['Serve each piece promptly'],
+    comments: ['Use fish suitable for raw consumption'],
+  },
+  pieces: [
+    {
+      fish: 'tuna',
+      sauce: 'zuke',
+      riceExtras: ['wasabi'],
+      torched: false,
+      toppings: ['seaSalt'],
+      qty: 1,
+      recipe: {
+        title: 'Tuna Zuke Nigiri',
+        fish: 'Tuna / maguro.',
+        cut: 'about 5 mm thick',
+        rice: '13–15 g per piece',
+        sauce: '### Zuke marinade\n- 3 tbsp soy sauce\n\nMarinate for about **5–8 minutes**, then blot gently.',
+        ingredients: ['Tuna', 'Sushi rice', 'Wasabi', 'Zuke marinade', 'Optional: scallion'],
+        before: ['Prepare and cool the zuke marinade.', 'Marinate the sliced tuna for 5–8 minutes.'],
+        after: ['Place 1 slice of marinated tuna over the rice.', 'Do not add extra soy sauce.'],
+        comments: ['Serve after the classic tuna piece.', 'Do not marinate too long.'],
+      },
+    },
+  ],
+}
+
 describe('encodeSet / decodeSet', () => {
   it('round-trips a set', () => {
     const decoded = decodeSet(encodeSet(sample))
     expect(decoded).toEqual({
       name: sample.name,
       pieces: sample.pieces.map(normalizePiece),
+    })
+  })
+
+  it('round-trips recipe notes and a base preparation exactly', () => {
+    const decoded = decodeSet(encodeSet(written))
+    expect(decoded).toEqual({
+      name: written.name,
+      pieces: written.pieces.map(normalizePiece),
+      base: written.base,
     })
   })
 
@@ -27,7 +70,11 @@ describe('encodeSet / decodeSet', () => {
   })
 
   it('produces url-safe output', () => {
-    expect(encodeSet(sample)).toMatch(/^[A-Za-z0-9_-]+$/)
+    expect(encodeSet(sample)).toMatch(/^v2\.[A-Za-z0-9+$-]+$/)
+  })
+
+  it('keeps a recipe-heavy set link manageably short', () => {
+    expect(encodeSet(written).length).toBeLessThan(1500)
   })
 
   it('clamps quantities on the way back in', () => {
@@ -35,16 +82,27 @@ describe('encodeSet / decodeSet', () => {
     expect(decoded?.pieces[0].qty).toBe(6)
   })
 
+  it('still decodes compact v1 links', () => {
+    const legacy =
+      'MXxSb24ncyUyMG9tYWthc2V8c2Eubi53LjEueS4yO2ViLnAuLS4wLmMuMTt1bi4wLi0uMC5ldC4xO3R1LnMud2guMC53LjE'
+    const decoded = decodeSet(legacy)
+    expect(decoded?.name).toBe("Ron's omakase")
+    expect(decoded?.pieces).toHaveLength(4)
+    expect(decoded?.pieces[0]).toEqual({
+      fish: 'salmon',
+      sauce: 'nikiri',
+      riceExtras: ['wasabi'],
+      torched: true,
+      toppings: ['yuzukosho'],
+      qty: 2,
+    })
+  })
+
   it('returns null for garbage input', () => {
     expect(decodeSet('not-a-real-code')).toBeNull()
     expect(decodeSet('')).toBeNull()
     expect(decodeSet('%%%')).toBeNull()
-  })
-
-  it('drops pieces with unknown fish but keeps the rest', () => {
-    const valid = encodeSet(sample)
-    const decoded = decodeSet(valid)
-    expect(decoded?.pieces).toHaveLength(3)
+    expect(decodeSet('v2.not-real-compressed-data!!')).toBeNull()
   })
 })
 
@@ -67,5 +125,45 @@ describe('coerceSet', () => {
     expect(coerced?.name).toBe('spaced out')
     expect(coerced?.pieces).toHaveLength(1)
     expect(coerced?.pieces[0].sauce).toBe('none')
+  })
+
+  it('keeps only string fields and lines inside a recipe', () => {
+    const coerced = coerceSet({
+      name: 'x',
+      pieces: [{ fish: 'salmon', recipe: { title: 42, comments: ['ok', 7, null], before: 'nope' } }],
+    })
+    expect(coerced?.pieces[0].recipe?.title).toBeUndefined()
+    expect(coerced?.pieces[0].recipe?.comments).toEqual(['ok'])
+    expect(coerced?.pieces[0].recipe?.before).toBeUndefined()
+  })
+
+  it('drops an empty recipe entirely', () => {
+    const coerced = coerceSet({ name: 'x', pieces: [{ fish: 'salmon', recipe: { title: '   ' } }] })
+    expect(coerced?.pieces[0].recipe).toBeUndefined()
+  })
+
+  it('round-trips a set that is only a base preparation', () => {
+    const onlyBase: SetData = { name: 'Rice', pieces: [], base: { title: 'Rice', before: ['Wash the rice'] } }
+    expect(decodeSet(encodeSet(onlyBase))).toEqual(onlyBase)
+  })
+
+  it('truncates over-long text and caps the number of lines', () => {
+    const coerced = coerceSet({
+      name: 'x',
+      pieces: [
+        {
+          fish: 'salmon',
+          recipe: {
+            title: 'a'.repeat(500),
+            sauce: 'b'.repeat(9000),
+            comments: Array.from({ length: 60 }, (_, index) => `note ${index}`),
+          },
+        },
+      ],
+    })
+    const recipe = coerced?.pieces[0].recipe
+    expect(recipe?.title).toHaveLength(200)
+    expect(recipe?.sauce).toHaveLength(8000)
+    expect(recipe?.comments).toHaveLength(40)
   })
 })

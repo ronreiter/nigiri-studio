@@ -1,11 +1,22 @@
-import { MAX_NAME, pieceSubtitle, pieceTitle, pieceTitleJp, totalPieces, type Piece } from '../data/options'
+import {
+  MAX_NAME,
+  pieceSubtitle,
+  pieceTitle,
+  pieceTitleJp,
+  totalPieces,
+  type Piece,
+  type PieceRecipe,
+} from '../data/options'
 import { NigiriSvg } from './NigiriSvg'
+import { RecipeFields } from './RecipeFields'
 
 type Props = {
   name: string
   pieces: Piece[]
+  base?: PieceRecipe
   editingIndex: number | null
   onNameChange: (name: string) => void
+  onBaseChange: (recipe: PieceRecipe | undefined) => void
   onEdit: (index: number) => void
   onDuplicate: (index: number) => void
   onRemove: (index: number) => void
@@ -20,8 +31,10 @@ type Props = {
 export function SetTray({
   name,
   pieces,
+  base,
   editingIndex,
   onNameChange,
+  onBaseChange,
   onEdit,
   onDuplicate,
   onRemove,
@@ -53,6 +66,8 @@ export function SetTray({
           onChange={(event) => onNameChange(event.target.value)}
         />
       </label>
+
+      <RecipeFields value={base} label="Base preparation (optional)" onChange={onBaseChange} />
 
       {pieces.length === 0 ? (
         <p className="empty">No pieces yet. Pick a fish, dress the rice, and add it to the board.</p>

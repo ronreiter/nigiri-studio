@@ -1,4 +1,5 @@
 import { FISH, MAX_QTY, RICE_EXTRAS, SAUCES, TOPPINGS, sauceOf, type Piece } from '../data/options'
+import { RecipeFields } from './RecipeFields'
 
 type Props = {
   piece: Piece
@@ -150,6 +151,14 @@ export function BuilderPanel({ piece, editing, onChange, onSubmit, onCancel, onR
             +
           </button>
         </div>
+      </div>
+
+      <div className="panel-section">
+        <RecipeFields
+          value={piece.recipe}
+          label="Recipe notes (optional)"
+          onChange={(recipe) => onChange({ ...piece, recipe })}
+        />
       </div>
 
       <div className="panel-actions">

@@ -5,6 +5,8 @@ import {
   RICE_EXTRAS,
   SAUCES,
   TOPPINGS,
+  normalizePiece,
+  pieceKey,
   pieceTitle,
   pieceTitleJp,
   type Piece,
@@ -79,5 +81,25 @@ describe('piece naming', () => {
   it('caps the name at two highlights', () => {
     const piece: Piece = { ...plain, toppings: ['scallion', 'sesame', 'shichimi'] }
     expect(pieceTitle(piece)).toBe('Salmon with Scallions & Sesame')
+  })
+
+  it('prefers a custom recipe title when one is set', () => {
+    const piece: Piece = { ...plain, recipe: { title: 'Tuna Zuke Nigiri' } }
+    expect(pieceTitle(piece)).toBe('Tuna Zuke Nigiri')
+  })
+
+  it('drops blank recipe fields when normalizing', () => {
+    const pieced = normalizePiece({
+      ...plain,
+      recipe: { title: '  ', comments: ['  ', 'ok'], before: [] },
+    })
+    expect(pieced.recipe).toEqual({ comments: ['ok'] })
+  })
+
+  it('treats pieces with different recipes as different keys', () => {
+    const bare = pieceKey(plain)
+    const written = pieceKey({ ...plain, recipe: { title: 'House special' } })
+    expect(written).not.toBe(bare)
+    expect(pieceKey({ ...plain, recipe: { title: 'House special' } })).toBe(written)
   })
 })

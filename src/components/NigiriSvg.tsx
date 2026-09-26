@@ -56,6 +56,26 @@ const SHICHIMI_SPECKS: Point[] = [
   { x: 175, y: 70 },
 ]
 
+const SALT_FLAKES: Point[] = [
+  { x: 90, y: 64, r: 12 },
+  { x: 112, y: 72, r: -20 },
+  { x: 134, y: 66, r: 30 },
+  { x: 154, y: 78, r: -8 },
+  { x: 100, y: 90, r: 18 },
+  { x: 142, y: 94, r: -25 },
+  { x: 70, y: 84, r: 6 },
+  { x: 164, y: 68, r: 40 },
+]
+
+const YUZU_DROPS: Point[] = [
+  { x: 96, y: 68 },
+  { x: 124, y: 62 },
+  { x: 148, y: 72 },
+  { x: 108, y: 82 },
+  { x: 138, y: 86 },
+  { x: 78, y: 76 },
+]
+
 const BLISTERS: (Point & { s: number })[] = [
   { x: 66, y: 76, r: 12, s: 1.1 },
   { x: 84, y: 64, r: -20, s: 0.7 },
@@ -348,6 +368,18 @@ function FishBase({ id, fish, clip }: { id: IdFn; fish: FishOption; clip: string
           </g>
         </>
       )
+    case 'intias':
+      return (
+        <>
+          <path d={FISH_UNDERSIDE} fill={dark} fillOpacity="0.9" />
+          <g clipPath={`url(#${clip})`}>
+            {drape}
+            <path d={SEABREAM_SKIN} fill="#e9b7a5" opacity="0.9" />
+            <path d="M 40 94 C 45 73 83 59 120 59 C 157 59 195 73 200 94" stroke="#9fb7c4" strokeWidth="2.2" fill="none" opacity="0.8" />
+            <DrapeShading id={id} />
+          </g>
+        </>
+      )
     case 'toroSalmon':
       return (
         <>
@@ -478,6 +510,29 @@ function ToppingLayer({ piece, id }: { piece: Piece; id: IdFn }) {
           <circle cx="163" cy="71" r="1" fill="#a83f1c" />
         </g>
       )}
+      {toppings.includes('yuzu') &&
+        YUZU_DROPS.map((drop, index) => (
+          <g key={`z${index}`} transform={`translate(${drop.x} ${drop.y})`}>
+            <path d="M 0 -3.6 C 2.8 -1.2 2.8 3.2 0 3.2 C -2.8 3.2 -2.8 -1.2 0 -3.6 Z" fill="#ecdb4f" opacity="0.85" />
+            <circle cx="-0.9" cy="0.7" r="0.7" fill="#ffffff" opacity="0.75" />
+          </g>
+        ))}
+      {toppings.includes('seaSalt') &&
+        SALT_FLAKES.map((flake, index) => (
+          <rect
+            key={`sl${index}`}
+            x={flake.x}
+            y={flake.y}
+            width="2.8"
+            height="1.9"
+            rx="0.5"
+            fill="#f4f9fc"
+            stroke="#b9c6cf"
+            strokeWidth="0.4"
+            opacity="0.95"
+            transform={`rotate(${flake.r} ${flake.x} ${flake.y})`}
+          />
+        ))}
       <path d="M 40 108 C 70 120 170 120 200 108" stroke="#2b1c10" strokeWidth="7" fill="none" opacity="0.1" filter={`url(#${id('blur')})`} />
     </g>
   )
