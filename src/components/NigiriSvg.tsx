@@ -76,6 +76,17 @@ const YUZU_DROPS: Point[] = [
   { x: 78, y: 76 },
 ]
 
+const TRUFFLE_SHAVINGS: Point[] = [
+  { x: 92, y: 70, r: -18 },
+  { x: 112, y: 64, r: 12 },
+  { x: 134, y: 72, r: 30 },
+  { x: 152, y: 66, r: -8 },
+  { x: 84, y: 84, r: 24 },
+  { x: 106, y: 88, r: -30 },
+  { x: 128, y: 80, r: 6 },
+  { x: 148, y: 90, r: -14 },
+]
+
 const BLISTERS: (Point & { s: number })[] = [
   { x: 66, y: 76, r: 12, s: 1.1 },
   { x: 84, y: 64, r: -20, s: 0.7 },
@@ -531,6 +542,18 @@ function ToppingLayer({ piece, id }: { piece: Piece; id: IdFn }) {
             strokeWidth="0.4"
             opacity="0.95"
             transform={`rotate(${flake.r} ${flake.x} ${flake.y})`}
+          />
+        ))}
+      {toppings.includes('truffle') &&
+        TRUFFLE_SHAVINGS.map((shaving, index) => (
+          <path
+            key={`tr${index}`}
+            d={`M ${shaving.x - 6} ${shaving.y} C ${shaving.x - 1} ${shaving.y - 3.4} ${shaving.x + 5} ${shaving.y - 2.6} ${shaving.x + 6.5} ${shaving.y + 0.4} C ${shaving.x + 3} ${shaving.y + 3} ${shaving.x - 3} ${shaving.y + 2.8} ${shaving.x - 6} ${shaving.y} Z`}
+            fill="#3b2f26"
+            stroke="#6f5a45"
+            strokeWidth="0.5"
+            opacity="0.95"
+            transform={`rotate(${shaving.r} ${shaving.x} ${shaving.y})`}
           />
         ))}
       <path d="M 40 108 C 70 120 170 120 200 108" stroke="#2b1c10" strokeWidth="7" fill="none" opacity="0.1" filter={`url(#${id('blur')})`} />

@@ -138,6 +138,7 @@ describe('wire format stability', () => {
       'shichimi',
       'yuzu',
       'seaSalt',
+      'truffle',
     ])
   })
 })

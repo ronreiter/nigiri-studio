@@ -978,27 +978,21 @@ button {
 }
 
 .shopping {
-  position: sticky;
-  top: 86px;
   padding: 20px;
-  max-height: calc(100vh - 106px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
 }
 
-.shopping::-webkit-scrollbar {
-  width: 10px;
+.rice-jump {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: rgba(111, 103, 87, 0.35);
+  text-underline-offset: 3px;
 }
 
-.shopping::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.shopping::-webkit-scrollbar-thumb {
-  background: var(--line-strong);
-  border: 2px solid var(--paper-2);
-  border-radius: 999px;
+.rice-jump:hover {
+  color: var(--ink);
 }
 
 .shopping h2 {
@@ -1387,7 +1381,8 @@ button {
   .viewer-actions,
   .drawer,
   .toast,
-  .smoke {
+  .smoke,
+  .rice-jump {
     display: none !important;
   }
 

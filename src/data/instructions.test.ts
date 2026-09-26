@@ -88,4 +88,11 @@ describe('newer components', () => {
     expect(list.find((item) => item.key === 'topping:yuzu')?.detail).toContain('on top')
     expect(list.find((item) => item.key === 'topping:seaSalt')?.detail).toContain('on top')
   })
+
+  it('lists and shaves truffle when it is chosen', () => {
+    const piece: Piece = { ...salmon, toppings: ['truffle', 'seaSalt'] }
+    expect(pieceIngredients(piece).map((item) => item.label)).toContain('Truffle')
+    expect(pieceSteps(piece).join(' ')).toMatch(/shave a few thin slices of black truffle/i)
+    expect(shoppingList([piece]).find((item) => item.key === 'topping:truffle')?.detail).toContain('on top')
+  })
 })

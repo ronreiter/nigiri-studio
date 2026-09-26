@@ -11,7 +11,8 @@ storage.
 
 - **Design each nigiri** from real components: 10 fish (including toro salmon,
   toro tuna, and hamachi), 8 rice sauces — each with a note on what it is made
-  of — wasabi and shiso under the fish, a torch toggle, and 5 toppings.
+  of — wasabi and shiso under the fish, a torch toggle, and 8 toppings
+  (scallions, wasabi, yuzukosho, sesame, shichimi, yuzu, sea salt, truffle).
 - **See it illustrated.** Every piece is drawn as a layered SVG: rice, sauce
   tint, wasabi peeking out, the fish with its own colors and texture, char marks
   when torched, and the toppings on top. Pieces get menu-style names with their

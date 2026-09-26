@@ -33,14 +33,14 @@ export const PAIRINGS: Record<FishId, FishPairing> = {
     sauces: { nikiri: 0.4, yuzuShio: 0.25, shoyu: 0.2, ponzu: 0.1, none: 0.05 },
     torch: 0.5,
     riceExtras: { wasabi: 0.8, shiso: 0.1 },
-    toppings: { scallion: 0.4, yuzukosho: 0.25, sesame: 0.2, yuzu: 0.15, seaSalt: 0.1, shichimi: 0.1, wasabi: 0.05 },
+    toppings: { scallion: 0.4, yuzukosho: 0.25, sesame: 0.2, yuzu: 0.15, seaSalt: 0.1, shichimi: 0.1, wasabi: 0.05, truffle: 0.15 },
     note: 'Fatty salmon takes nikiri or a torch pass; scallion and sesame keep it bright.',
   },
   toroSalmon: {
     sauces: { nikiri: 0.4, yuzuShio: 0.3, none: 0.2, ponzu: 0.1, shoyu: 0.05 },
     torch: 0.55,
     riceExtras: { wasabi: 0.7, shiso: 0.15 },
-    toppings: { scallion: 0.4, yuzukosho: 0.3, sesame: 0.15, yuzu: 0.15, seaSalt: 0.1, shichimi: 0.1 },
+    toppings: { scallion: 0.4, yuzukosho: 0.3, sesame: 0.15, yuzu: 0.15, seaSalt: 0.1, shichimi: 0.1, truffle: 0.25 },
     note: 'Belly fat wants restraint: a brush of yuzu shio and a quick torch.',
   },
   tuna: {
@@ -54,7 +54,7 @@ export const PAIRINGS: Record<FishId, FishPairing> = {
     sauces: { nikiri: 0.45, yuzuShio: 0.3, none: 0.15, umeShoyu: 0.1 },
     torch: 0.6,
     riceExtras: { wasabi: 0.75, shiso: 0.15 },
-    toppings: { scallion: 0.35, yuzukosho: 0.3, shichimi: 0.15, sesame: 0.1, wasabi: 0.1, yuzu: 0.15, seaSalt: 0.1 },
+    toppings: { scallion: 0.35, yuzukosho: 0.3, shichimi: 0.15, sesame: 0.1, wasabi: 0.1, yuzu: 0.15, seaSalt: 0.1, truffle: 0.2 },
     note: 'Marbled chutoro loves the torch; go light on soy so the fat reads.',
   },
   yellowtail: {
@@ -96,14 +96,14 @@ export const PAIRINGS: Record<FishId, FishPairing> = {
     sauces: { yuzuShio: 0.4, ponzu: 0.3, nikiri: 0.15, none: 0.15 },
     torch: 0,
     riceExtras: { wasabi: 0.4, shiso: 0.25 },
-    toppings: { yuzukosho: 0.35, sesame: 0.3, yuzu: 0.25, seaSalt: 0.2, shichimi: 0.2, scallion: 0.15 },
+    toppings: { yuzukosho: 0.35, sesame: 0.3, yuzu: 0.25, seaSalt: 0.2, shichimi: 0.2, scallion: 0.15, truffle: 0.25 },
     note: 'Cool, custardy hotate: citrus and a little heat, never the torch.',
   },
   seabream: {
     sauces: { yuzuShio: 0.35, nikiri: 0.3, umeShoyu: 0.2, ponzu: 0.15 },
     torch: 0.2,
     riceExtras: { wasabi: 0.55, shiso: 0.35 },
-    toppings: { yuzukosho: 0.3, scallion: 0.3, yuzu: 0.15, seaSalt: 0.2, shichimi: 0.2, sesame: 0.2 },
+    toppings: { yuzukosho: 0.3, scallion: 0.3, yuzu: 0.15, seaSalt: 0.2, shichimi: 0.2, sesame: 0.2, truffle: 0.15 },
     note: 'Delicate tai pairs with yuzu shio and shiso for celebrations.',
   },
 }

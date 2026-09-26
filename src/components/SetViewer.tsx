@@ -274,7 +274,14 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
           Quantities assume 18 g of seasoned shari per piece.
           {hasCustomRecipes ? ' Custom recipes carry their own amounts — check each card.' : ''}
         </p>
-        {set.base && <BaseCard recipe={set.base} />}
+        {set.base && (
+          <>
+            <a className="rice-jump" href="#rice-guide-heading">
+              How to make the rice ↓
+            </a>
+            <BaseCard recipe={set.base} />
+          </>
+        )}
       </aside>
     </main>
   )

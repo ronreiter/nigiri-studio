@@ -347,6 +347,16 @@ export const TOPPINGS = [
     ingredient: 'Flaky sea salt — a few flakes',
     step: 'Finish with a few flakes of sea salt.',
   },
+  {
+    id: 'truffle',
+    code: 'r',
+    en: 'Truffle',
+    jp: 'トリュフ',
+    romaji: 'truffle',
+    color: '#4a3b2f',
+    ingredient: 'Black truffle — a few thin shavings',
+    step: 'Shave a few thin slices of black truffle over the fish while it is still warm.',
+  },
 ] as const
 
 export type ToppingId = (typeof TOPPINGS)[number]['id']
