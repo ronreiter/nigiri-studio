@@ -90,4 +90,25 @@ describe('SetViewer', () => {
     renderViewer()
     expect(screen.queryByText(/Wet your hands with tezu/)).toBeNull()
   })
+
+  it('puts the base preparation under the shopping list', () => {
+    renderViewer()
+    const aside = screen.getByRole('complementary', { name: 'Shopping list and base preparation' })
+    expect(aside.textContent).toContain('Shopping list')
+    expect(aside.textContent).toContain('Sushi Rice & Basic Sauces')
+  })
+
+  it('falls back to “How to make the rice” when the base has no title', () => {
+    render(
+      <SetViewer
+        set={{ name: 'Rice only', pieces: [], base: { before: ['Wash the rice'] } }}
+        preview={false}
+        onEditCopy={vi.fn()}
+        onSave={vi.fn()}
+        onCopyLink={vi.fn()}
+        onBackToBuilder={vi.fn()}
+      />,
+    )
+    expect(screen.getByRole('heading', { name: 'How to make the rice' })).toBeTruthy()
+  })
 })

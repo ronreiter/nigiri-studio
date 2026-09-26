@@ -187,9 +187,9 @@ function PieceCard({ piece }: { piece: Piece }) {
 
 function BaseCard({ recipe }: { recipe: PieceRecipe }) {
   return (
-    <article className="base-card">
+    <section className="rice-guide" aria-labelledby="rice-guide-heading">
       <p className="eyebrow">Base preparation</p>
-      <h2>{recipe.title ?? 'Base preparation'}</h2>
+      <h2 id="rice-guide-heading">{recipe.title ?? 'How to make the rice'}</h2>
       {recipe.fish && <p className="piece-sub">{recipe.fish}</p>}
       {(recipe.cut || recipe.rice) && (
         <ul className="recipe-meta">
@@ -207,8 +207,10 @@ function BaseCard({ recipe }: { recipe: PieceRecipe }) {
           )}
         </ul>
       )}
-      <RecipeExtras recipe={recipe} />
-    </article>
+      <div className="rice-columns">
+        <RecipeExtras recipe={recipe} />
+      </div>
+    </section>
   )
 }
 
@@ -247,8 +249,6 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
           </div>
         </header>
 
-        {set.base && <BaseCard recipe={set.base} />}
-
         {set.pieces.length === 0 ? (
           <p className="empty">This set is empty.</p>
         ) : (
@@ -256,7 +256,7 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
         )}
       </div>
 
-      <aside className="shopping" aria-label="Shopping list">
+      <aside className="shopping" aria-label="Shopping list and base preparation">
         <h2>Shopping list</h2>
         {items.length === 0 ? (
           <p className="empty">Nothing to shop for yet.</p>
@@ -274,6 +274,7 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
           Quantities assume 18 g of seasoned shari per piece.
           {hasCustomRecipes ? ' Custom recipes carry their own amounts — check each card.' : ''}
         </p>
+        {set.base && <BaseCard recipe={set.base} />}
       </aside>
     </main>
   )

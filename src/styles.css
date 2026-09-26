@@ -1101,18 +1101,19 @@ button {
   color: var(--ink-soft);
 }
 
-.base-card {
-  padding: 22px 24px;
-  margin-bottom: 18px;
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+.rice-guide {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line);
 }
 
-.base-card h2 {
-  font-size: 26px;
+.rice-guide h2 {
+  font-size: 21px;
   margin-bottom: 4px;
+}
+
+.rice-guide .recipe-meta {
+  margin-top: 10px;
 }
 
 /* ---------- drawer ---------- */
@@ -1393,15 +1394,22 @@ button {
     font-size: 11px;
   }
 
-  /* the base preparation may run over one page; the fish may not */
-  .base-card {
-    padding: 0;
-    border: 0;
-    box-shadow: none;
+  /* the rice guide gets its own final page, in two readable columns */
+  .rice-guide {
+    break-before: page;
   }
 
-  .base-card h2 {
+  .rice-guide h2 {
     font-size: 20px;
+  }
+
+  .rice-columns {
+    columns: 2;
+    column-gap: 10mm;
+  }
+
+  .rice-columns h3 {
+    break-after: avoid;
   }
 
   .piece-card {
@@ -1414,9 +1422,7 @@ button {
     break-inside: avoid;
   }
 
-  /* one fish per page: the first piece starts a new page when a base card is
-     above it, and every following piece always does */
-  .base-card + .piece-card,
+  /* one fish per page */
   .piece-card + .piece-card {
     break-before: page;
   }
@@ -1523,6 +1529,9 @@ button {
     box-shadow: none;
     border-color: #ddd;
     break-before: page;
+  }
+
+  .shopping ul {
     break-inside: avoid;
   }
 
