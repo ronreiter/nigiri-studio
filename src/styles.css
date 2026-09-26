@@ -858,6 +858,7 @@ button {
 }
 
 .viewer-head {
+  grid-column: 1 / -1;
   margin-bottom: 22px;
 }
 
@@ -982,6 +983,7 @@ button {
 }
 
 .rice-guide--top {
+  grid-column: 1 / -1;
   padding: 24px;
   margin-bottom: 20px;
   background: var(--paper-2);

@@ -225,36 +225,36 @@ export function SetViewer({ set, preview, onEditCopy, onSave, onCopyLink, onBack
 
   return (
     <main className="viewer">
+      <header className="viewer-head">
+        <p className="eyebrow">{preview ? 'Preview' : 'Shared set'}</p>
+        <h1>{set.name || 'Untitled omakase'}</h1>
+        <p className="viewer-meta">
+          {set.pieces.length} kinds · {total} pieces · make them in the order below
+        </p>
+        <div className="viewer-actions">
+          <button type="button" className="btn btn-primary" onClick={onEditCopy}>
+            Edit a copy
+          </button>
+          <button type="button" className="btn" onClick={onSave}>
+            Save to my sets
+          </button>
+          <button type="button" className="btn" onClick={onCopyLink}>
+            Copy link
+          </button>
+          <button type="button" className="btn" onClick={() => window.print()}>
+            Print
+          </button>
+          {preview && (
+            <button type="button" className="btn btn-ghost" onClick={onBackToBuilder}>
+              Back to builder
+            </button>
+          )}
+        </div>
+      </header>
+
+      {set.base && <BaseCard recipe={set.base} variant="top" />}
+
       <div className="viewer-main">
-        <header className="viewer-head">
-          <p className="eyebrow">{preview ? 'Preview' : 'Shared set'}</p>
-          <h1>{set.name || 'Untitled omakase'}</h1>
-          <p className="viewer-meta">
-            {set.pieces.length} kinds · {total} pieces · make them in the order below
-          </p>
-          <div className="viewer-actions">
-            <button type="button" className="btn btn-primary" onClick={onEditCopy}>
-              Edit a copy
-            </button>
-            <button type="button" className="btn" onClick={onSave}>
-              Save to my sets
-            </button>
-            <button type="button" className="btn" onClick={onCopyLink}>
-              Copy link
-            </button>
-            <button type="button" className="btn" onClick={() => window.print()}>
-              Print
-            </button>
-            {preview && (
-              <button type="button" className="btn btn-ghost" onClick={onBackToBuilder}>
-                Back to builder
-              </button>
-            )}
-          </div>
-        </header>
-
-        {set.base && <BaseCard recipe={set.base} variant="top" />}
-
         {set.pieces.length === 0 ? (
           <p className="empty">This set is empty.</p>
         ) : (
