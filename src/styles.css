@@ -1357,16 +1357,22 @@ button {
 
 /* ---------- print ---------- */
 
+@page {
+  margin: 14mm;
+}
+
 @media print {
   .app-header,
   .viewer-actions,
   .drawer,
-  .toast {
+  .toast,
+  .smoke {
     display: none !important;
   }
 
   body {
     background: #fff;
+    font-size: 12px;
   }
 
   .viewer {
@@ -1375,15 +1381,161 @@ button {
     max-width: none;
   }
 
-  .piece-card {
-    break-inside: avoid;
+  .viewer-head {
+    margin-bottom: 10px;
+  }
+
+  .viewer-head h1 {
+    font-size: 24px;
+  }
+
+  .viewer-meta {
+    font-size: 11px;
+  }
+
+  /* the base preparation may run over one page; the fish may not */
+  .base-card {
+    padding: 0;
+    border: 0;
     box-shadow: none;
-    border-color: #ddd;
+  }
+
+  .base-card h2 {
+    font-size: 20px;
+  }
+
+  .piece-card {
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 14px;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    animation: none;
+    break-inside: avoid;
+  }
+
+  /* one fish per page: the first piece starts a new page when a base card is
+     above it, and every following piece always does */
+  .base-card + .piece-card,
+  .piece-card + .piece-card {
+    break-before: page;
+  }
+
+  .piece-card h2 {
+    font-size: 19px;
+  }
+
+  .piece-title-jp {
+    font-size: 12px;
+    margin-top: 1px;
+  }
+
+  .piece-sub {
+    font-size: 11.5px;
+  }
+
+  .piece-figure {
+    background: none;
+    padding: 0;
+  }
+
+  .piece-figure svg {
+    max-width: 150px;
+  }
+
+  .recipe-meta {
+    margin: 8px 0 0;
+    gap: 2px;
+  }
+
+  .recipe-meta li {
+    font-size: 11.5px;
+  }
+
+  .recipe-meta span {
+    min-width: 92px;
+    font-size: 10px;
+  }
+
+  .recipe-heading {
+    font-size: 10px;
+    margin: 11px 0 5px;
+  }
+
+  .recipe-text {
+    font-size: 11.5px;
+    gap: 4px;
+  }
+
+  .recipe-text-heading {
+    font-size: 13px;
+  }
+
+  .recipe-text-list,
+  .recipe-comments {
+    gap: 3px;
+    font-size: 11.5px;
+  }
+
+  .ingredient-list {
+    gap: 3px;
+  }
+
+  .ingredient-list li {
+    padding-bottom: 3px;
+    font-size: 11.5px;
+  }
+
+  .ingredients {
+    gap: 4px;
+    margin: 9px 0 4px;
+  }
+
+  .ing {
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+
+  .steps {
+    gap: 4px;
+  }
+
+  .steps li {
+    padding-left: 25px;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
+  .steps li::before {
+    width: 17px;
+    height: 17px;
+    font-size: 9.5px;
+  }
+
+  .piece-note {
+    margin-top: 10px;
+    padding: 7px 10px;
+    font-size: 11px;
   }
 
   .shopping {
     position: static;
     box-shadow: none;
+    border-color: #ddd;
+    break-before: page;
     break-inside: avoid;
+  }
+
+  .shopping li {
+    gap: 4px;
+    font-size: 11.5px;
+  }
+
+  .steps li::before,
+  .eyebrow,
+  .ing,
+  .piece-note {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }

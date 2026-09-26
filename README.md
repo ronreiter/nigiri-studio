@@ -33,7 +33,8 @@ storage.
 - **Save sets** in `localStorage` and reopen them later (`My sets`).
 - **Cook from it.** Every piece gets an ingredient list, step-by-step assembly
   instructions that follow your exact choices, and the set gets an aggregated
-  shopping list. The recipe view is print-friendly.
+  shopping list. The recipe view is print-friendly: the base preparation comes
+  first, then every fish starts on its own page, with the shopping list last.
 
 ## Run it
 
